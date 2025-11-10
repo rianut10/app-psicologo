@@ -314,111 +314,122 @@ export default function ExercisesLibrary() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-0 shadow-2xl">
-        <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-lg">
-          <CardTitle className="flex items-center gap-2">
-            <div className="p-2 bg-white/20 rounded-xl">
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-bold">Biblioteca de Exercícios</span>
-          </CardTitle>
-          <CardDescription className="text-white/90 font-medium">
-            Exercícios práticos para melhorar seu bem-estar mental
-          </CardDescription>
-        </CardHeader>
-      </Card>
+    <div 
+      className="space-y-6 min-h-screen bg-cover bg-center bg-no-repeat relative"
+      style={{
+        backgroundImage: `url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=800&fit=crop&crop=center')`
+      }}
+    >
+      {/* Overlay para melhorar legibilidade */}
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
+      
+      {/* Conteúdo com z-index para ficar acima do overlay */}
+      <div className="relative z-10">
+        <Card className="bg-gradient-to-br from-indigo-50/95 to-purple-50/95 dark:from-indigo-900/90 dark:to-purple-900/90 backdrop-blur-md border-0 shadow-2xl">
+          <CardHeader className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-t-lg">
+            <CardTitle className="flex items-center gap-2">
+              <div className="p-2 bg-white/20 rounded-xl">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold">Biblioteca de Exercícios</span>
+            </CardTitle>
+            <CardDescription className="text-white/90 font-medium">
+              Exercícios práticos para melhorar seu bem-estar mental
+            </CardDescription>
+          </CardHeader>
+        </Card>
 
-      {/* Category Filter */}
-      <div className="flex flex-wrap gap-3">
-        {categories.map((category) => {
-          const Icon = category.icon
-          return (
-            <Button
-              key={category.id}
-              variant={activeCategory === category.id ? "default" : "outline"}
-              onClick={() => setActiveCategory(category.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 ${
-                activeCategory === category.id
-                  ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-0'
-                  : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white/90'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span className="font-semibold">{category.label}</span>
-            </Button>
-          )
-        })}
-      </div>
+        {/* Category Filter */}
+        <div className="flex flex-wrap gap-3">
+          {categories.map((category) => {
+            const Icon = category.icon
+            return (
+              <Button
+                key={category.id}
+                variant={activeCategory === category.id ? "default" : "outline"}
+                onClick={() => setActiveCategory(category.id)}
+                className={`flex items-center gap-2 px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 backdrop-blur-md ${
+                  activeCategory === category.id
+                    ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white border-0'
+                    : 'bg-white/90 dark:bg-gray-800/90 hover:bg-white/95 border-white/50'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span className="font-semibold">{category.label}</span>
+              </Button>
+            )
+          })}
+        </div>
 
-      {/* Exercises Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredExercises.map((exercise) => {
-          const Icon = categoryIcons[exercise.category]
-          return (
-            <Card key={exercise.id} className="cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-105 bg-white/10 dark:bg-black/20 backdrop-blur-md border-0 shadow-xl">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-2xl shadow-lg ${
-                      exercise.category === 'breathing' ? 'bg-gradient-to-r from-blue-400 to-cyan-500' :
-                      exercise.category === 'mindfulness' ? 'bg-gradient-to-r from-purple-400 to-indigo-500' :
-                      exercise.category === 'cognitive' ? 'bg-gradient-to-r from-yellow-400 to-orange-500' :
-                      'bg-gradient-to-r from-green-400 to-emerald-500'
-                    }`}>
-                      <Icon className="w-5 h-5 text-white" />
+        {/* Exercises Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredExercises.map((exercise) => {
+            const Icon = categoryIcons[exercise.category]
+            return (
+              <Card key={exercise.id} className="cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-105 bg-white/95 dark:bg-black/90 backdrop-blur-md border-0 shadow-xl">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-3 rounded-2xl shadow-lg ${
+                        exercise.category === 'breathing' ? 'bg-gradient-to-r from-blue-400 to-cyan-500' :
+                        exercise.category === 'mindfulness' ? 'bg-gradient-to-r from-purple-400 to-indigo-500' :
+                        exercise.category === 'cognitive' ? 'bg-gradient-to-r from-yellow-400 to-orange-500' :
+                        'bg-gradient-to-r from-green-400 to-emerald-500'
+                      }`}>
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      <CardTitle className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                        {exercise.title}
+                      </CardTitle>
                     </div>
-                    <CardTitle className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                      {exercise.title}
-                    </CardTitle>
+                    <Badge className={`${difficultyColors[exercise.difficulty]} shadow-lg`}>
+                      {exercise.difficulty === 'easy' ? 'Fácil' : 
+                       exercise.difficulty === 'medium' ? 'Médio' : 'Difícil'}
+                    </Badge>
                   </div>
-                  <Badge className={`${difficultyColors[exercise.difficulty]} shadow-lg`}>
-                    {exercise.difficulty === 'easy' ? 'Fácil' : 
-                     exercise.difficulty === 'medium' ? 'Médio' : 'Difícil'}
-                  </Badge>
-                </div>
-                <CardDescription className="line-clamp-2 font-medium text-gray-600 dark:text-gray-400">
-                  {exercise.description}
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-semibold">
-                    <div className="p-2 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl shadow-lg">
-                      <Clock className="w-4 h-4 text-white" />
+                  <CardDescription className="line-clamp-2 font-medium text-gray-600 dark:text-gray-400">
+                    {exercise.description}
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-semibold">
+                      <div className="p-2 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl shadow-lg">
+                        <Clock className="w-4 h-4 text-white" />
+                      </div>
+                      {exercise.duration} min
                     </div>
-                    {exercise.duration} min
                   </div>
-                </div>
-                
-                <div className="mb-6">
-                  <p className="text-sm font-bold mb-3 text-gray-800 dark:text-gray-200">Benefícios:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {exercise.benefits.slice(0, 2).map((benefit, index) => (
-                      <Badge key={index} className="bg-gradient-to-r from-pink-400 to-red-500 text-white border-0 text-xs shadow-lg">
-                        {benefit}
-                      </Badge>
-                    ))}
-                    {exercise.benefits.length > 2 && (
-                      <Badge className="bg-gradient-to-r from-gray-400 to-gray-500 text-white border-0 text-xs shadow-lg">
-                        +{exercise.benefits.length - 2}
-                      </Badge>
-                    )}
+                  
+                  <div className="mb-6">
+                    <p className="text-sm font-bold mb-3 text-gray-800 dark:text-gray-200">Benefícios:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {exercise.benefits.slice(0, 2).map((benefit, index) => (
+                        <Badge key={index} className="bg-gradient-to-r from-pink-400 to-red-500 text-white border-0 text-xs shadow-lg">
+                          {benefit}
+                        </Badge>
+                      ))}
+                      {exercise.benefits.length > 2 && (
+                        <Badge className="bg-gradient-to-r from-gray-400 to-gray-500 text-white border-0 text-xs shadow-lg">
+                          +{exercise.benefits.length - 2}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
-                </div>
-                
-                <Button 
-                  onClick={() => startExercise(exercise)}
-                  className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl py-3 font-bold"
-                >
-                  <Play className="w-4 h-4 mr-2" />
-                  Começar Exercício
-                </Button>
-              </CardContent>
-            </Card>
-          )
-        })}
+                  
+                  <Button 
+                    onClick={() => startExercise(exercise)}
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-2xl py-3 font-bold"
+                  >
+                    <Play className="w-4 h-4 mr-2" />
+                    Começar Exercício
+                  </Button>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
       </div>
     </div>
   )

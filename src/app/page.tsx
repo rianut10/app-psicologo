@@ -1,226 +1,124 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { Brain, MessageCircle, Heart, TrendingUp, BookOpen, Shield, Music, PenTool, Star, X } from 'lucide-react'
+import { useState } from 'react'
+import { Brain, MessageCircle, Heart, TrendingUp, BookOpen, Shield, Music, PenTool, Star, Check, ArrowRight, Users, Award, Clock, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import ChatTherapy from '@/components/chat-therapy'
-import MoodTracker from '@/components/mood-tracker'
-import ExercisesLibrary from '@/components/exercises-library'
-import ProgressDashboard from '@/components/progress-dashboard'
-import BooksLibrary from '@/components/books-library'
-import RelaxingMusic from '@/components/relaxing-music'
-import PersonalDiary from '@/components/personal-diary'
+import Link from 'next/link'
 
-// Versículos bíblicos motivadores
-const biblicalVerses = [
-  {
-    verse: "Posso todas as coisas naquele que me fortalece.",
-    reference: "Filipenses 4:13"
-  },
-  {
-    verse: "O Senhor é meu pastor; nada me faltará.",
-    reference: "Salmos 23:1"
-  },
-  {
-    verse: "Entrega o teu caminho ao Senhor; confia nele, e ele o fará.",
-    reference: "Salmos 37:5"
-  },
-  {
-    verse: "Porque eu bem sei os pensamentos que tenho a vosso respeito, diz o Senhor; pensamentos de paz e não de mal, para vos dar o fim que esperais.",
-    reference: "Jeremias 29:11"
-  },
-  {
-    verse: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destra da minha justiça.",
-    reference: "Isaías 41:10"
-  },
-  {
-    verse: "Lança sobre o Senhor a tua ansiedade, e ele te susterá; nunca permitirá que o justo seja abalado.",
-    reference: "Salmos 55:22"
-  },
-  {
-    verse: "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei.",
-    reference: "Mateus 11:28"
-  },
-  {
-    verse: "E sabemos que todas as coisas contribuem juntamente para o bem daqueles que amam a Deus.",
-    reference: "Romanos 8:28"
-  },
-  {
-    verse: "O Senhor é a minha luz e a minha salvação; a quem temerei? O Senhor é a força da minha vida; de quem me recearei?",
-    reference: "Salmos 27:1"
-  },
-  {
-    verse: "Alegrai-vos sempre no Senhor; outra vez digo, alegrai-vos.",
-    reference: "Filipenses 4:4"
-  },
-  {
-    verse: "Porque o seu jugo é suave e o seu fardo é leve.",
-    reference: "Mateus 11:30"
-  },
-  {
-    verse: "Mas os que esperam no Senhor renovarão as suas forças; subirão com asas como águias; correrão, e não se cansarão; caminharão, e não se fatigarão.",
-    reference: "Isaías 40:31"
-  },
-  {
-    verse: "A paz vos deixo, a minha paz vos dou; não vo-la dou como o mundo a dá. Não se turbe o vosso coração, nem se atemorize.",
-    reference: "João 14:27"
-  },
-  {
-    verse: "Bendito seja o Deus e Pai de nosso Senhor Jesus Cristo, que, segundo a sua grande misericórdia, nos gerou de novo para uma viva esperança.",
-    reference: "1 Pedro 1:3"
-  },
-  {
-    verse: "Confiai no Senhor perpetuamente; porque em Deus, o Senhor, há uma rocha eterna.",
-    reference: "Isaías 26:4"
-  },
-  {
-    verse: "O Senhor te abençoará e te guardará; o Senhor fará resplandecer o seu rosto sobre ti, e terá misericórdia de ti.",
-    reference: "Números 6:24-25"
-  },
-  {
-    verse: "Porque onde estiver o vosso tesouro, aí estará também o vosso coração.",
-    reference: "Mateus 6:21"
-  },
-  {
-    verse: "Sede fortes e corajosos; não temais, nem vos espanteis, porque o Senhor vosso Deus é convosco, por onde quer que andardes.",
-    reference: "Josué 1:9"
-  },
-  {
-    verse: "O amor é sofredor, é benigno; o amor não é invejoso; o amor não trata com leviandade, não se ensoberbece.",
-    reference: "1 Coríntios 13:4"
-  },
-  {
-    verse: "Porque Deus não nos deu o espírito de temor, mas de fortaleza, e de amor, e de moderação.",
-    reference: "2 Timóteo 1:7"
-  },
-  {
-    verse: "Buscai primeiro o reino de Deus, e a sua justiça, e todas estas coisas vos serão acrescentadas.",
-    reference: "Mateus 6:33"
-  },
-  {
-    verse: "Ainda que eu andasse pelo vale da sombra da morte, não temeria mal algum, porque tu estás comigo.",
-    reference: "Salmos 23:4"
-  },
-  {
-    verse: "Porque o Senhor, teu Deus, te abençoará em toda a obra das tuas mãos.",
-    reference: "Deuteronômio 15:10"
-  },
-  {
-    verse: "Aquietai-vos, e sabei que eu sou Deus; serei exaltado entre os gentios; serei exaltado sobre a terra.",
-    reference: "Salmos 46:10"
-  },
-  {
-    verse: "Porque a minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza.",
-    reference: "2 Coríntios 12:9"
-  },
-  {
-    verse: "Tudo tem o seu tempo determinado, e há tempo para todo o propósito debaixo do céu.",
-    reference: "Eclesiastes 3:1"
-  },
-  {
-    verse: "E a paz de Deus, que excede todo o entendimento, guardará os vossos corações e os vossos sentimentos em Cristo Jesus.",
-    reference: "Filipenses 4:7"
-  },
-  {
-    verse: "Porque ele dará aos seus anjos ordem a teu respeito, para te guardarem em todos os teus caminhos.",
-    reference: "Salmos 91:11"
-  },
-  {
-    verse: "Bem-aventurados os que choram, porque eles serão consolados.",
-    reference: "Mateus 5:4"
-  },
-  {
-    verse: "O Senhor é bom, uma fortaleza no dia da angústia; e conhece os que confiam nele.",
-    reference: "Naum 1:7"
-  }
-]
+export default function SalesPage() {
+  const [showTestimonials, setShowTestimonials] = useState(false)
 
-function getDailyVerse() {
-  const today = new Date()
-  const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24)
-  const verseIndex = dayOfYear % biblicalVerses.length
-  return biblicalVerses[verseIndex]
-}
-
-export default function MentalHealthApp() {
-  const [activeTab, setActiveTab] = useState('chat')
-  const [showDailyVerse, setShowDailyVerse] = useState(false)
-  const [dailyVerse, setDailyVerse] = useState(null)
-
-  useEffect(() => {
-    // Verificar se já mostrou o versículo hoje
-    const today = new Date().toDateString()
-    const lastShown = localStorage.getItem('lastVerseShown')
-    
-    if (lastShown !== today) {
-      setDailyVerse(getDailyVerse())
-      setShowDailyVerse(true)
-      localStorage.setItem('lastVerseShown', today)
+  const features = [
+    {
+      icon: MessageCircle,
+      title: "Chat Terapêutico IA",
+      description: "Conversas inteligentes 24/7 para apoio emocional"
+    },
+    {
+      icon: Heart,
+      title: "Rastreamento de Humor",
+      description: "Monitore suas emoções e identifique padrões"
+    },
+    {
+      icon: BookOpen,
+      title: "Exercícios de Mindfulness",
+      description: "Técnicas comprovadas para reduzir ansiedade"
+    },
+    {
+      icon: TrendingUp,
+      title: "Dashboard de Progresso",
+      description: "Visualize sua jornada de bem-estar mental"
+    },
+    {
+      icon: Music,
+      title: "Música Relaxante",
+      description: "Sons e melodias para acalmar a mente"
+    },
+    {
+      icon: PenTool,
+      title: "Diário Pessoal",
+      description: "Registre pensamentos e reflexões diárias"
     }
-  }, [])
+  ]
 
-  const closeDailyVerse = () => {
-    setShowDailyVerse(false)
-  }
+  const testimonials = [
+    {
+      name: "Maria Silva",
+      role: "Empresária",
+      content: "O MindCare mudou minha vida! Consegui controlar minha ansiedade e melhorar meu bem-estar geral.",
+      rating: 5
+    },
+    {
+      name: "João Santos",
+      role: "Estudante",
+      content: "Incrível como um app pode fazer tanta diferença. Uso todos os dias e me sinto muito melhor.",
+      rating: 5
+    },
+    {
+      name: "Ana Costa",
+      role: "Professora",
+      content: "Recomendo para todos! É como ter um psicólogo no bolso. Muito útil nos momentos difíceis.",
+      rating: 5
+    }
+  ]
+
+  const pricingPlans = [
+    {
+      name: "Básico",
+      price: "Grátis",
+      description: "Para começar sua jornada",
+      features: [
+        "Chat básico com IA",
+        "Rastreamento de humor",
+        "3 exercícios por dia",
+        "Suporte por email"
+      ],
+      popular: false
+    },
+    {
+      name: "Premium",
+      price: "R$ 29,90/mês",
+      description: "Acesso completo",
+      features: [
+        "Chat ilimitado com IA",
+        "Todos os exercícios",
+        "Relatórios detalhados",
+        "Música relaxante premium",
+        "Diário com backup",
+        "Suporte prioritário",
+        "Sessões com especialistas"
+      ],
+      popular: true
+    },
+    {
+      name: "Família",
+      price: "R$ 49,90/mês",
+      description: "Para até 4 pessoas",
+      features: [
+        "Tudo do Premium",
+        "4 contas familiares",
+        "Dashboard familiar",
+        "Controle parental",
+        "Relatórios compartilhados"
+      ],
+      popular: false
+    }
+  ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 dark:from-purple-900 dark:via-pink-900 dark:to-orange-900">
-      {/* Daily Bible Verse Modal */}
-      {showDailyVerse && dailyVerse && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <Card className="max-w-md w-full bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900 dark:to-orange-900 border-2 border-yellow-300 shadow-2xl animate-in fade-in-0 zoom-in-95 duration-300">
-            <CardHeader className="text-center relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={closeDailyVerse}
-                className="absolute right-2 top-2 h-8 w-8 p-0 hover:bg-yellow-200 dark:hover:bg-yellow-800"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-              <div className="flex justify-center mb-3">
-                <div className="p-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full shadow-lg">
-                  <Star className="w-8 h-8 text-white" />
-                </div>
-              </div>
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                Mensagem do Dia
-              </CardTitle>
-              <CardDescription className="text-yellow-700 dark:text-yellow-300 font-medium">
-                Uma palavra de esperança para você
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <blockquote className="text-lg font-medium text-gray-800 dark:text-gray-200 italic leading-relaxed">
-                "{dailyVerse.verse}"
-              </blockquote>
-              <cite className="text-sm font-bold text-yellow-600 dark:text-yellow-400 block">
-                — {dailyVerse.reference}
-              </cite>
-              <Button
-                onClick={closeDailyVerse}
-                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                Começar o Dia
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400">
       {/* Header */}
-      <header className="border-b bg-white/10 dark:bg-black/20 backdrop-blur-md sticky top-0 z-50 shadow-2xl">
+      <header className="border-b bg-white/10 backdrop-blur-md sticky top-0 z-50 shadow-2xl">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110">
+              <div className="p-3 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl shadow-lg">
                 <Brain className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
                   MindCare
                 </h1>
                 <p className="text-sm text-white/80 font-medium">
@@ -228,114 +126,244 @@ export default function MentalHealthApp() {
                 </p>
               </div>
             </div>
-            <Badge className="bg-gradient-to-r from-yellow-400 to-orange-400 text-black border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <Badge className="bg-gradient-to-r from-yellow-400 to-orange-400 text-black border-0 shadow-lg">
               <Shield className="w-3 h-3 mr-1" />
-              Apoio, não substitui profissionais
+              Apoio profissional
             </Badge>
           </div>
         </div>
       </header>
 
-      {/* Disclaimer */}
-      <div className="bg-gradient-to-r from-amber-400 to-orange-400 border-l-4 border-red-400 p-4 m-4 rounded-r-2xl shadow-xl">
-        <div className="flex items-start">
-          <Shield className="w-6 h-6 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
-          <div className="text-sm">
-            <p className="font-bold text-red-800 mb-1 text-base">
-              Importante: Este aplicativo é uma ferramenta de apoio
+      {/* Hero Section */}
+      <section className="py-20 text-center">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <Badge className="mb-6 bg-gradient-to-r from-green-400 to-emerald-500 text-white border-0 shadow-lg text-lg px-6 py-2">
+              <Users className="w-4 h-4 mr-2" />
+              Mais de 50.000 usuários transformaram suas vidas
+            </Badge>
+            
+            <h2 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+              Transforme sua
+              <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent block">
+                Saúde Mental
+              </span>
+            </h2>
+            
+            <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-3xl mx-auto">
+              Descubra o poder de cuidar da sua mente com tecnologia de ponta. 
+              Chat terapêutico, exercícios personalizados e acompanhamento profissional.
             </p>
-            <p className="text-red-700 font-medium">
-              Não substitui o acompanhamento de profissionais de saúde mental qualificados. 
-              Em caso de crise ou pensamentos de autolesão, procure ajuda profissional imediatamente.
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+              <Link href="/quiz">
+                <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold text-lg px-8 py-4 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 transform">
+                  <Zap className="w-5 h-5 mr-2" />
+                  Fazer Quiz Personalizado
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+              
+              <Button variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-purple-600 font-semibold text-lg px-8 py-4 rounded-2xl backdrop-blur-sm bg-white/10">
+                Ver Demonstração
+              </Button>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-8 text-white/80">
+              <div className="flex items-center gap-2">
+                <Check className="w-5 h-5 text-green-400" />
+                <span>Sem compromisso</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-5 h-5 text-green-400" />
+                <span>Teste grátis 7 dias</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-5 h-5 text-green-400" />
+                <span>Cancele quando quiser</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-white/10 backdrop-blur-md">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-bold text-white mb-4">
+              Tudo que você precisa para cuidar da sua mente
+            </h3>
+            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+              Ferramentas cientificamente comprovadas para melhorar seu bem-estar mental
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card key={index} className="bg-white/20 backdrop-blur-md border-white/20 hover:bg-white/30 transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                <CardHeader className="text-center">
+                  <div className="mx-auto mb-4 p-4 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl w-fit">
+                    <feature.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <CardTitle className="text-white text-xl">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-white/80 text-center text-base">
+                    {feature.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <div className="grid md:grid-cols-4 gap-8 mb-16">
+            <div className="text-center">
+              <div className="text-4xl font-bold text-white mb-2">50K+</div>
+              <div className="text-white/80">Usuários Ativos</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-white mb-2">95%</div>
+              <div className="text-white/80">Satisfação</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-white mb-2">24/7</div>
+              <div className="text-white/80">Suporte</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-white mb-2">4.9★</div>
+              <div className="text-white/80">Avaliação</div>
+            </div>
+          </div>
+
+          {/* Testimonials */}
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-12">
+              O que nossos usuários dizem
+            </h3>
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="bg-white/20 backdrop-blur-md border-white/20">
+                  <CardContent className="p-6">
+                    <div className="flex mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                      ))}
+                    </div>
+                    <p className="text-white/90 mb-4 italic">"{testimonial.content}"</p>
+                    <div className="text-white font-semibold">{testimonial.name}</div>
+                    <div className="text-white/60 text-sm">{testimonial.role}</div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-20 bg-white/10 backdrop-blur-md">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-bold text-white mb-4">
+              Escolha o plano ideal para você
+            </h3>
+            <p className="text-xl text-white/80">
+              Comece grátis e evolua conforme suas necessidades
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <Card key={index} className={`relative ${plan.popular ? 'bg-gradient-to-b from-yellow-400/20 to-orange-400/20 border-yellow-400 scale-105' : 'bg-white/20'} backdrop-blur-md border-white/20 hover:scale-105 transition-all duration-300`}>
+                {plan.popular && (
+                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-orange-400 text-black border-0">
+                    <Award className="w-3 h-3 mr-1" />
+                    Mais Popular
+                  </Badge>
+                )}
+                
+                <CardHeader className="text-center">
+                  <CardTitle className="text-white text-2xl mb-2">{plan.name}</CardTitle>
+                  <div className="text-3xl font-bold text-white mb-2">{plan.price}</div>
+                  <CardDescription className="text-white/80">{plan.description}</CardDescription>
+                </CardHeader>
+                
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center gap-3 text-white/90">
+                        <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <Link href="/quiz" className="block">
+                    <Button className={`w-full mt-6 ${plan.popular ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black' : 'bg-white/20 hover:bg-white/30 text-white border border-white/30'} font-semibold py-3 rounded-xl transition-all duration-300`}>
+                      {plan.price === 'Grátis' ? 'Começar Grátis' : 'Fazer Quiz Primeiro'}
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h3 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Pronto para transformar sua vida?
+            </h3>
+            <p className="text-xl text-white/90 mb-8">
+              Faça nosso quiz personalizado e descubra qual plano é perfeito para suas necessidades
+            </p>
+            
+            <Link href="/quiz">
+              <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-black font-bold text-xl px-12 py-6 rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 transform">
+                <Clock className="w-6 h-6 mr-3" />
+                Fazer Quiz (2 minutos)
+                <ArrowRight className="w-6 h-6 ml-3" />
+              </Button>
+            </Link>
+            
+            <p className="text-white/70 mt-4">
+              ✨ Quiz gratuito • Resultado instantâneo • Sem compromisso
             </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7 mb-8 bg-white/20 dark:bg-black/30 backdrop-blur-md shadow-2xl rounded-2xl border border-white/20">
-            <TabsTrigger 
-              value="chat" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-400 data-[state=active]:to-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span className="hidden sm:inline font-semibold">Chat</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="mood" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-400 data-[state=active]:to-red-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <Heart className="w-4 h-4" />
-              <span className="hidden sm:inline font-semibold">Humor</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="exercises" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-400 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <BookOpen className="w-4 h-4" />
-              <span className="hidden sm:inline font-semibold">Exercícios</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="progress" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-400 data-[state=active]:to-indigo-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <TrendingUp className="w-4 h-4" />
-              <span className="hidden sm:inline font-semibold">Progresso</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="books" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-400 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <BookOpen className="w-4 h-4" />
-              <span className="hidden sm:inline font-semibold">Livros</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="music" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-400 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <Music className="w-4 h-4" />
-              <span className="hidden sm:inline font-semibold">Música</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="diary" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-400 data-[state=active]:to-teal-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all duration-300 hover:scale-105"
-            >
-              <PenTool className="w-4 h-4" />
-              <span className="hidden sm:inline font-semibold">Diário</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="chat" className="space-y-6">
-            <ChatTherapy />
-          </TabsContent>
-
-          <TabsContent value="mood" className="space-y-6">
-            <MoodTracker />
-          </TabsContent>
-
-          <TabsContent value="exercises" className="space-y-6">
-            <ExercisesLibrary />
-          </TabsContent>
-
-          <TabsContent value="progress" className="space-y-6">
-            <ProgressDashboard />
-          </TabsContent>
-
-          <TabsContent value="books" className="space-y-6">
-            <BooksLibrary />
-          </TabsContent>
-
-          <TabsContent value="music" className="space-y-6">
-            <RelaxingMusic />
-          </TabsContent>
-
-          <TabsContent value="diary" className="space-y-6">
-            <PersonalDiary />
-          </TabsContent>
-        </Tabs>
-      </main>
+      {/* Footer */}
+      <footer className="bg-black/30 backdrop-blur-md py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center gap-3 mb-4 md:mb-0">
+              <div className="p-2 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-white font-bold text-xl">MindCare</span>
+            </div>
+            
+            <div className="text-white/60 text-center">
+              <p className="mb-2">© 2024 MindCare. Todos os direitos reservados.</p>
+              <p className="text-sm flex items-center justify-center gap-2">
+                <Shield className="w-4 h-4" />
+                Ferramenta de apoio - não substitui profissionais de saúde mental
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* Emergency Contact */}
       <div className="fixed bottom-4 right-4">
